@@ -1,0 +1,83 @@
+networks:
+  pedelogo:
+    name: pedelogo
+    driver: bridge
+
+volumes:
+  mongodb_vol:
+    name: mongodb_vol
+
+services:
+  webapi:
+    image: kubedevio/pedelogo-catalogo:v1.0.0
+    container_name: webapi
+    ports:
+      - 80:80
+    networks:
+      - pedelogo
+    depends_on:
+      - mongodb
+    environment:
+      Mongo__Host: mongodb
+      Mongo__User: pedelogo
+      Mongo__Password: pedelogopass
+      Mongo__Port: 27017
+      Mongo__Database: admin
+
+  mongodb:
+    image: mongo:4.1
+    container_name: mongodb
+    volumes:
+      - mongodb_vol:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - pedelogo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: pedelogo
+      MONGO_INITDB_ROOT_PASSWORD: pedelogopass
+
+  prometheus:
+    image: prom/prometheus:v2.24.1
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    depends_on:
+      - webapi
+    volumes:
+      - ./prometheus.yml/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./alert.rules.yml/alert.rules.yml:/etc/prometheus/alert.rules
+    networks:
+      - pedelogo
+
+  mongodb_exporter:
+    image: fabricioveronez/mongo_exporter
+    container_name: mongo_exporter
+    ports:
+      - 9216:9216
+    networks:
+      - pedelogo
+    environment:
+      MONGODB_URI: "mongodb://pedelogo:pedelogopass@mongodb:27017"
+    depends_on:
+      - mongodb
+
+  grafana:
+    image: grafana/grafana:main
+    container_name: grafana
+    restart: unless-stopped
+    networks:
+      - pedelogo
+    ports:
+      - "3000:3000"
+
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    container_name: alertmanager
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./alert.rules.yml/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    restart: always
+    networks:
+      - pedelogo
