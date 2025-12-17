@@ -2,13 +2,13 @@ groups:
   - name: WebApiAlert
     rules:
       - alert: WebApiAlert
-        expr: sum(rate(http_requests_received_total[1m])) > 1
+        expr: sum(rate(http_requests_received_total[1m])) by (instance) > 1
         for: 30s
         labels:
           team: webapi
         annotations:
           titulo: "Número alto de requisições"
-          descricao: "{{$labels.alertname}} está com um número alto de requisições. ({{$value}}s)"
+          descricao: "{{$labels.instance}} está com um número alto de requisições. ({{$value}}s)"
   - name: MongoDBAlert
     rules:
       - alert: MongoDBAlert
