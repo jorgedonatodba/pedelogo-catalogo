@@ -8,7 +8,7 @@ groups:
           team: webapi
         annotations:
           titulo: "Número alto de requisições"
-          descricao: "{{ $labels.instance }} está com um número alto de requisições. ({{$value}}s)"
+          descricao: "{{$labels.alertname}} está com um número alto de requisições. ({{$value}}s)"
   - name: MongoDBAlert
     rules:
       - alert: MongoDBAlert
@@ -18,4 +18,4 @@ groups:
           team: mongodb
         annotations:
           titulo: "Número alto de consultas"
-          descricao: "{{ $labels.instance }} está com um número alto de consultas."
+          descricao: "{{$labels.job}} está com um número alto de consultas."

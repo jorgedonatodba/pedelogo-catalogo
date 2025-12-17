@@ -24,7 +24,7 @@ scrape_configs:
         labels:
           versao: 1.0.0
     metrics_path: /metrics
-  - job_name: mongodb_exporter
+  - job_name: "192.168.15.60"
     scrape_interval: 5s
     scrape_timeout: 2s
     static_configs:

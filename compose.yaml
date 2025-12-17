@@ -42,7 +42,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: pedelogopass
 
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:v3.8.1
     container_name: prometheus
     ports:
       - 9090:9090
@@ -67,7 +67,7 @@ services:
       - mongodb
 
   grafana:
-    image: grafana/grafana:main
+    image: grafana/grafana:12.3
     container_name: grafana
     restart: unless-stopped
     networks:
@@ -76,7 +76,7 @@ services:
       - "3000:3000"
 
   alertmanager:
-    image: prom/alertmanager
+    image: prom/alertmanager:v0.30.0
     container_name: alertmanager
     ports:
       - "9093:9093"
