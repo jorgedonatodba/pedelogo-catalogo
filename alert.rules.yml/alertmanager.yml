@@ -5,7 +5,6 @@ route:
   group_wait: 15s
   group_interval: 15s
   repeat_interval: 1m
-
   routes:
   - receiver: AlertaMongoDB
     match:
